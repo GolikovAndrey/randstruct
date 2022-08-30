@@ -12,19 +12,15 @@ import (
 
 type Circle struct {
 	x, y, r float64
-} // инициализируем структуру Круг
+}
 
 func crosses(left, right Circle) bool {
 
 	return math.Sqrt(
 		math.Pow(left.x-right.x, 2)+math.Pow(left.y-right.y, 2),
 	) <= left.r+right.r
-} // отслеживаем пересечения, если есть - true если между двумя данными кругами есть пересечение
+}
 
-// item - дырка, которую планируем вставить
-// items - дырки, которые уже имеются на поверхности
-// Если предполагаемая дырка пересекается хоть с одной из существующих
-// генерируем новую дырку и снова проверяем
 func check(item Circle, items []Circle) bool {
 	for _, one := range items {
 		if crosses(item, one) {
@@ -32,14 +28,14 @@ func check(item Circle, items []Circle) bool {
 		}
 	}
 	return true
-} // ну тупа чек пересечений кругов
+}
 
 func main() {
 	i := 1
 	j := 2
 	errors := 0
 	maxRange := 150
-	// Создание нового excele-файла
+
 	f := excelize.NewFile()
 	f.SetCellValue("Sheet1", "A1", "Circles X coordinate")
 	f.SetCellValue("Sheet1", "B1", "Circles Y coordinate")
@@ -49,9 +45,9 @@ func main() {
 	f.SetCellValue("Sheet1", "G1", "Max. range")
 	f.SetCellValue("Sheet1", "H1", maxRange)
 
-	circles := make([]Circle, 0, 20)                      // создание массива дырок макс. значение = 20
-	circle := Circle{}                                    // объект дырки, рандомим его параметры каждую итерацию и пытаемся положить на поверхность, по сути этот объект один раз побывает каждой дыркой на поверности
-	r1 := rand.New(rand.NewSource(time.Now().UnixNano())) // устанавливаем seed генератора рандомных чисел(без него между запусками программы дырки будут всегда одни и те же)
+	circles := make([]Circle, 0, 20)
+	circle := Circle{}
+	r1 := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	for i < maxRange {
 		if errors == 100 {
@@ -71,32 +67,32 @@ func main() {
 		circles = append(circles, circle)
 		angle := 45.0
 
-		// Треугольная фигура
+		// Square figure
+		// for k := 0; k < 4; k++ {
+		// 	alpha := (angle * math.Pi) / 180
+		// 	f.SetCellValue("Sheet1", "E"+strconv.Itoa(j), circle.x+circle.r*math.Cos(alpha))
+		// 	f.SetCellValue("Sheet1", "F"+strconv.Itoa(j), circle.y+circle.r*math.Sin(alpha))
+		// 	angle += 90
+		// 	j++
+		// }
+
+		// Triangle figure
 		// for k := 0; k < 3; k++ {
 		// 	alpha := (angle * math.Pi) / 180
 		// 	f.SetCellValue("Sheet1", "E"+strconv.Itoa(j), circle.x+circle.r*math.Cos(alpha))
 		// 	f.SetCellValue("Sheet1", "F"+strconv.Itoa(j), circle.y+circle.r*math.Sin(alpha))
-		// 	angle += 120
+		// 	angle += 60
 		// 	j++
 		// }
 
-		// Квадратная фигура
-		for k := 0; k < 4; k++ {
+		// Circle figure
+		for k := 0; k < 18; k++ {
 			alpha := (angle * math.Pi) / 180
 			f.SetCellValue("Sheet1", "E"+strconv.Itoa(j), circle.x+circle.r*math.Cos(alpha))
 			f.SetCellValue("Sheet1", "F"+strconv.Itoa(j), circle.y+circle.r*math.Sin(alpha))
-			angle += 90
+			angle += 20
 			j++
 		}
-
-		// Окружность
-		// for k := 0; k < 18; k++ {
-		// 	alpha := (angle * math.Pi) / 180
-		// 	f.SetCellValue("Sheet1", "E"+strconv.Itoa(j), circle.x+circle.r*math.Cos(alpha))
-		// 	f.SetCellValue("Sheet1", "F"+strconv.Itoa(j), circle.y+circle.r*math.Sin(alpha))
-		// 	angle += 20
-		// 	j++
-		// }
 		i++
 	}
 	fmt.Println(errors)
